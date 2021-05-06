@@ -1,6 +1,6 @@
 # VaccineScriptHTML
 
-[Direct Download Link]: https://drive.google.com/u/0/uc?id=1XyWaB2aoRiqRhrZS-xu6vv_s4iehibSW&export=download
+Direct Download Link: https://drive.google.com/u/0/uc?id=1XyWaB2aoRiqRhrZS-xu6vv_s4iehibSW&export=download
 
 Enter pincode and minimum age and click "check vaccine availability" button to start application.
 The script will keep checking availability in every 30 minutes and will raise youtube alarm if slots are available.
