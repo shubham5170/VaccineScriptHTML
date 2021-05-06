@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>
+Enter pincode and minimum age and click check vaccine availability button to start application.
+<br>
+The script will keep checking availability in every 30 minutes and will raise youtube alarm if slots are available.
+<br>
+Also if slots are available, center name and date will appear on screen.
+<br>
+To check for multiple pincodes, open same page in multiple tabs and run each tab for different pincode. 
+<br>
+Do not try for more than 5 pincodes in a single machine.  
+<br>
+Do not close the tab to keep the script running. 
+<br><br>
+Enter Pincode: <input type="text" id="pincode" value="">
+<br><br>
+Enter Minimum Age (18/45): <input type="text" id="age" value="">
+<br><br>
+<button type="button" onclick="checkForPincodeForever()">Check vaccine availability</button>
+<br><br>
+<ul id="logs">
+  </ul>
+<script>
+var logs = "";
+async function checkForPincodeForever() {
+    appendLogs("Starting application...");
+    while(true)
+    {     
+    var pincode = document.getElementById("pincode").value;
+    var age = parseInt(document.getElementById("age").value);
+    appendLogs("Checking Vaccine availability for pincode: "+pincode+" & Minimum Age: "+age);
+    console.log("Checking Vaccine availability for pincode: "+pincode+" & Minimum Age: "+age);
+    checkForPincode(pincode,age);
+    appendLogs("Checking for availability after 30 minutes, please do not close this tab.");
+    appendLogs("");
+    await new Promise(r => setTimeout(r, 1800000));
+    }
+}
+
+async function checkForPincode(pincode, age) {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = dd + '-' + mm + '-' + yyyy;
+    var xmlHttp = new XMLHttpRequest();
+    var url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode="+pincode+"&date="+today;
+    console.log(url);
+    xmlHttp.open( "GET", url, false ); // false for synchronous request
+    xmlHttp.send( null );
+    myObj = JSON.parse(xmlHttp.responseText);
+    console.log(myObj);
+    var vaccineAvailable = false;
+    var centers = myObj.centers;
+    for(var i = 0; i < centers.length; i++)
+    {
+    var sessions = myObj.centers[i].sessions;
+    for (var j = 0; j < sessions.length; j++) {
+    if(sessions[j].available_capacity!=0 && sessions[j].min_age_limit==age)
+    {
+        vaccineAvailable = true;
+        appendLogs("Vaccine available at Center Name: "+ centers[i].name +" Session date: " + sessions[j].date);
+    }
+    }
+    }
+
+    if(vaccineAvailable) 
+    {
+    window.open("https://www.youtube.com/watch?v=mdtVg-75Zu8",'_blank');
+    }
+    else
+    {
+        appendLogs("Vaccine not available");
+    }
+}
+
+async function appendLogs(log)
+{
+    var node = document.createElement("LI");
+    var textnode = document.createTextNode(log);
+    node.appendChild(textnode);
+    document.getElementById("logs").appendChild(node);
+}
+</script>
+</h3>
+</body>
+</html> 
